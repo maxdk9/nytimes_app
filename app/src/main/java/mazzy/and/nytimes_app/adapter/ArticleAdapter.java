@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -28,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mazzy.and.nytimes_app.R;
 import mazzy.and.nytimes_app.activity.MainActivity;
+import mazzy.and.nytimes_app.db.DbLab;
 import mazzy.and.nytimes_app.fragment.ArticleFragment;
 import mazzy.and.nytimes_app.model.Article;
 import mazzy.and.nytimes_app.model.Media;
@@ -54,7 +56,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int i) {
 
 
         final Article article=articles.get(i);
@@ -69,9 +71,23 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 Bundle bundle = new Bundle();
                 bundle.putString(ArticleFragment.ARTICLE_URL,article.getUrl());
                 articleDetailFragment.setArguments(bundle);
-             //  Functions.changeMainFragmentWithBackstack(fragmentManager,articleDetailFragment);
+                Functions.addAndInitFragmentWithBackStack(articleDetailFragment, R.id.main_app_container, fragmentManager);
 
-                Functions.addAndInitFragmentWithBackStack(articleDetailFragment, R.id.main_container, fragmentManager);
+            }
+        });
+        holder.articleImageFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                article.setFavorite(!article.isFavorite());
+                if(article.isFavorite()){
+                    holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_checked);
+                    DbLab.getInstance(context).AddArticle(article);
+                }
+                else{
+                    holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
+                    DbLab.getInstance(context).DeleteArticle(article);
+                }
 
             }
         });
@@ -80,17 +96,26 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         holder.title.setText(article.getTitle());
         holder.articleDate.setText(article.getPublished_date());
-        if((article.getMedia().length>0)&&(article.getMedia()[0].getMediaMetadata().length>0)){
-            String imageurl=article.getMedia()[0].getMediaMetadata()[0].getUrl();
-
+        DbLab.getInstance(context).SetFavoriteFromList(article);
+        if(article.isFavorite()){
+            holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_checked);
+        }
+        else{
+            holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
+        }
+        String imageurl = Article.GetImageUrl(article);
+        if (imageurl != null) {
             Glide.with(context)
-                    .load(imageurl).transition(DrawableTransitionOptions.withCrossFade()).placeholder(R.drawable.ic_launcher_background).override(40,40).into(holder.articleIcon);
+                    .load(imageurl).transition(DrawableTransitionOptions.withCrossFade()).placeholder(R.drawable.ic_launcher_background).override(40, 40).into(holder.articleIcon);
         }
 
 
 
 
     }
+
+
+
 
     @Override
     public int getItemCount() {
@@ -100,13 +125,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_article_mainlayout)
-        LinearLayout mainLayout;
+        ConstraintLayout mainLayout;
         @BindView(R.id.item_article_title)
         TextView title;
         @BindView(R.id.item_article_date)
         TextView articleDate;
         @BindView(R.id.item_article_icon)
         ImageView articleIcon;
+
+        @BindView(R.id.item_article_favorite)
+        ImageView articleImageFavorite;
 
 
 

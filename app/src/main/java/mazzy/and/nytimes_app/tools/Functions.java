@@ -10,11 +10,11 @@ import mazzy.and.nytimes_app.R;
 
 public class Functions {
     public static void changeMainFragment(FragmentActivity fragmentActivity, Fragment fragment){
-        fragmentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container,fragment).commit();
+        fragmentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.main_app_container,fragment).commit();
     }
 
     public static void changeMainFragmentWithBackstack(FragmentManager fragmentManager, Fragment fragment){
-        fragmentManager.beginTransaction().replace(R.id.main_container,fragment).addToBackStack(null).commit();;
+        fragmentManager.beginTransaction().replace(R.id.main_app_container,fragment).addToBackStack(null).commit();;
     }
 
     public static String getStringResourceByName(String aString, Context context) {

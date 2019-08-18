@@ -1,4 +1,4 @@
-package mazzy.and.nytimes_app.ui;
+package mazzy.and.nytimes_app.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

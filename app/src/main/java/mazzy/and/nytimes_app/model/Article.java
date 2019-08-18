@@ -52,6 +52,19 @@ public class Article {
     @SerializedName("url")
     private String url;
 
+    private boolean favorite;
+
+    public static String GetImageUrl(Article article) {
+        if (article.getMedia().length == 0) {
+            return null;
+        }
+        if (article.getMedia()[0].getMediaMetadata().length == 0) {
+            return null;
+        }
+        return article.getMedia()[0].getMediaMetadata()[0].url;
+
+    }
+
 
     public String getAbstr() {
         return abstr;
@@ -237,5 +250,13 @@ public class Article {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }
