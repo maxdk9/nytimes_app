@@ -1,39 +1,34 @@
 package mazzy.and.nytimes_app.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.util.List;
 
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import mazzy.and.nytimes_app.R;
-import mazzy.and.nytimes_app.activity.MainActivity;
 import mazzy.and.nytimes_app.db.DbLab;
 import mazzy.and.nytimes_app.fragment.ArticleFragment;
 import mazzy.and.nytimes_app.model.Article;
-import mazzy.and.nytimes_app.model.Media;
 import mazzy.and.nytimes_app.tools.Functions;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
@@ -46,7 +41,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         this.context=c;
         this.articles=l;
         this.fragmentManager=fm;
-
     }
 
     @NonNull
@@ -58,43 +52,17 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int i) {
-
-
         final Article article=articles.get(i);
-
-
-
-
-
-//        holder.articleImageFavorite.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//
-//
-//            }
-//        });
-
-
-
         holder.title.setText(article.getTitle());
         holder.articleDate.setText(article.getPublished_date());
         DbLab.getInstance(context).SetFavoriteFromList(article);
-        if(article.isFavorite()){
-            holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_checked);
-        }
-        else{
-            holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
-        }
+        holder.SetArticleImageFavorite(article.isFavorite());
+
         String imageurl = Article.GetImageUrl(article);
         if (imageurl != null) {
             Glide.with(context)
                     .load(imageurl).transition(DrawableTransitionOptions.withCrossFade()).placeholder(R.drawable.ic_launcher_background).override(40, 40).into(holder.articleIcon);
         }
-
-
-
-
     }
 
 
@@ -119,21 +87,38 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         @BindView(R.id.item_article_favorite)
         ImageView articleImageFavorite;
 
+        @BindDrawable(R.drawable.ic_favorite_checked)
+        Drawable drawableChecked;
+
+        @BindDrawable(R.drawable.ic_favorite_unchecked)
+        Drawable drawableUnChecked;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
+
+
             mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
+                    if (!Functions.checkInternetConnection(context)) {
+                        Toast.makeText(context, "No internet connection!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     int position = getAdapterPosition();
                     Article article = articles.get(position);
                     ArticleFragment articleDetailFragment = new ArticleFragment();
                     Bundle bundle = new Bundle();
+                    bundle.putSerializable(ArticleFragment.ARTICLE_OB,article);
                     bundle.putString(ArticleFragment.ARTICLE_URL, article.getUrl());
+
                     articleDetailFragment.setArguments(bundle);
+
+
                     Functions.addAndInitFragmentWithBackStack(articleDetailFragment, R.id.main_app_container, fragmentManager);
                 }
             });
@@ -144,15 +129,26 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     Article article = articles.get(position);
                     article.setFavorite(!article.isFavorite());
                     if(article.isFavorite()){
-                        articleImageFavorite.setImageResource(R.drawable.ic_favorite_checked);
                         DbLab.getInstance(context).AddArticle(article);
                     }
                     else{
-                        articleImageFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
                         DbLab.getInstance(context).DeleteArticle(article);
                     }
+                    SetArticleImageFavorite(article.isFavorite());
+
                 }
             });
+        }
+
+
+
+        public void SetArticleImageFavorite(boolean f) {
+            if(f){
+                articleImageFavorite.setImageDrawable(drawableChecked);
+            }
+            else{
+                articleImageFavorite.setImageDrawable(drawableUnChecked);
+            }
 
         }
 

@@ -2,7 +2,9 @@ package mazzy.and.nytimes_app.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Article {
+import java.io.Serializable;
+
+public class Article implements Serializable {
 
     @SerializedName("abstract")
     private  String abstr;
@@ -22,7 +24,6 @@ public class Article {
     private Integer email_count;
     @SerializedName("eta_id")
     private Integer eta_id;
-
     @SerializedName("id")
     private Long id;
     @SerializedName("media")
@@ -51,7 +52,7 @@ public class Article {
     private String uri;
     @SerializedName("url")
     private String url;
-
+    @SerializedName("favorite")
     private boolean favorite;
 
     public static String GetImageUrl(Article article) {

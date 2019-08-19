@@ -33,11 +33,8 @@ public class TabFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab, container, false);
 
-
         unbinder = ButterKnife.bind(this, view);
-
         tabAdapter = new TabAdapter(getFragmentManager());
-
 
         ArticleListFragment emailedFragment=new ArticleListFragment();
         emailedFragment.setArguments(GetArticleListFragmentBundle(ArticleType.EMAILED));
@@ -47,9 +44,6 @@ public class TabFragment extends Fragment {
         viewedFragment.setArguments(GetArticleListFragmentBundle(ArticleType.VIEWED));
         ArticleListFragment favoritesFragment=new ArticleListFragment();
         ((ArticleListFragment) favoritesFragment).setArguments(GetArticleListFragmentBundle(ArticleType.FAVORITE));
-
-
-
 
         tabAdapter.addFragment(emailedFragment, Functions.getStringResourceByName("emailedtab",getContext()));
         tabAdapter.addFragment(sharedFragment, Functions.getStringResourceByName("sharedtab",getContext()));

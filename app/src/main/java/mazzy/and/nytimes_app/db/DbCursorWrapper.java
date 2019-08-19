@@ -35,7 +35,8 @@ public class DbCursorWrapper extends CursorWrapper {
         String published_date=getString(getColumnIndex(DbSchema.Cols.published_date));
         String section=getString(getColumnIndex(DbSchema.Cols.section));
         String title=getString(getColumnIndex(DbSchema.Cols.title));
-
+        String url=getString(getColumnIndex(DbSchema.Cols.url));
+        String uri=getString(getColumnIndex(DbSchema.Cols.uri));
 
         article.setFavorite(true);
         article.setAbstr(abstr);
@@ -51,6 +52,8 @@ public class DbCursorWrapper extends CursorWrapper {
         article.setNytdsection(nytdsection);
         article.setPublished_date(published_date);
         article.setSection(section);
+        article.setUrl(url);
+        article.setUri(uri);
         if(!imageUrl.isEmpty()){
             Media[] mediaArray = new Media[1];
             Media media=new Media();

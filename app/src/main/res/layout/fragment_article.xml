@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,4 +19,14 @@
              android:layout_height="fill_parent"
              android:scrollbars="none" />
 
+        <ImageView
+            android:id="@+id/fragment_article_imagefavorite"
+            android:src="@drawable/ic_favorite_unchecked"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignEnd="@+id/fragment_article_webview"
+            android:layout_alignBottom="@+id/fragment_article_webview"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"/>
+    </RelativeLayout>
 </FrameLayout>

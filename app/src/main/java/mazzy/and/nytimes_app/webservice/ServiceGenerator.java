@@ -1,5 +1,8 @@
 package mazzy.and.nytimes_app.webservice;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,5 +39,6 @@ public class ServiceGenerator {
         }
         return retrofit.create(serviceClass);
     }
+
 
 }

@@ -1,5 +1,6 @@
 package mazzy.and.nytimes_app.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,18 +34,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ArticleListFragment extends Fragment {
+public class ArticleListFragment extends Fragment  {
 
     private static final String TAG = ArticleListFragment.class.getSimpleName();
     public static final String ApiTypeKey = "apitype_key";
-
 
     @BindView(R.id.fragment_article_list_progressbar)
     ProgressBar progressBar;
     @BindView(R.id.fragment_article_list_recyclerview)
     RecyclerView recyclerView;
-
-
 
     private Unbinder unbinder;
     private List<Article> articleList = new ArrayList<Article>();
@@ -56,6 +54,7 @@ public class ArticleListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG,"OnCreateView");
         View view = inflater.inflate(R.layout.fragment_acticle_list, container, false);
 
         Bundle bundle=getArguments();
@@ -69,14 +68,8 @@ public class ArticleListFragment extends Fragment {
         recyclerView.setAdapter(articleAdapter);
         ShowProgressBar(true);
         GetArticles();
-
-
         return view;
     }
-
-
-
-
 
     private void GetArticles() {
         if (apiType == ArticleType.FAVORITE) {
@@ -93,8 +86,6 @@ public class ArticleListFragment extends Fragment {
             public void onResponse(Call<ResponseResult> call, Response<ResponseResult> response) {
                 if (response.isSuccessful()) {
                     ResponseResult responseResult = (ResponseResult) response.body();
-
-
                     articleList.addAll(responseResult.getResults());
                     articleAdapter.notifyDataSetChanged();
                 } else {
@@ -106,7 +97,6 @@ public class ArticleListFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseResult> call, Throwable t) {
                 Log.e(TAG, "failed" + t.getMessage());
-
                 ShowProgressBar(false);
             }
         });

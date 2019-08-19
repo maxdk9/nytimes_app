@@ -11,6 +11,5 @@ public interface ApiInterface {
     Call<ResponseResult> getMostPopular(@Path("mostpopular") String mostpopular, @Path("v2") String v2 , @Path("emailed") String emailed, @Path("period") int period,
                                         @Query("api-key") String apiKey);
 
-
     //https://api.nytimes.com/svc/mostpopular/v2/emailed/{period}.json
 }
