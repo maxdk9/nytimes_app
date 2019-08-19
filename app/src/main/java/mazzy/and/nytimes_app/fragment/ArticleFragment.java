@@ -98,9 +98,11 @@ public class ArticleFragment extends Fragment {
         if (b) {
             progressBar.setVisibility(View.VISIBLE);
             articleWebview.setVisibility(View.GONE);
+            articleImageFavorite.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
             articleWebview.setVisibility(View.VISIBLE);
+            articleImageFavorite.setVisibility(View.VISIBLE);
         }
     }
 
