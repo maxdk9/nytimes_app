@@ -1,6 +1,6 @@
 package mazzy.and.nytimes_app.model;
 
-public enum ApiType {
+public enum ArticleType {
     EMAILED{
         @Override
         public String getTypeString() {
@@ -17,6 +17,12 @@ public enum ApiType {
         @Override
         public String getTypeString() {
             return "viewed";
+        }
+    },
+    FAVORITE {
+        @Override
+        public String getTypeString() {
+            return "favorite";
         }
     };
     public abstract String  getTypeString();

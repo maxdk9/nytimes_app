@@ -27,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import mazzy.and.nytimes_app.R;
 import mazzy.and.nytimes_app.activity.MainActivity;
 import mazzy.and.nytimes_app.db.DbLab;
@@ -63,34 +64,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
 
 
-        holder.mainLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                ArticleFragment articleDetailFragment = new ArticleFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ArticleFragment.ARTICLE_URL,article.getUrl());
-                articleDetailFragment.setArguments(bundle);
-                Functions.addAndInitFragmentWithBackStack(articleDetailFragment, R.id.main_app_container, fragmentManager);
 
-            }
-        });
-        holder.articleImageFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                article.setFavorite(!article.isFavorite());
-                if(article.isFavorite()){
-                    holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_checked);
-                    DbLab.getInstance(context).AddArticle(article);
-                }
-                else{
-                    holder.articleImageFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
-                    DbLab.getInstance(context).DeleteArticle(article);
-                }
-
-            }
-        });
+//        holder.articleImageFavorite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//
+//            }
+//        });
 
 
 
@@ -123,7 +106,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder  {
         @BindView(R.id.item_article_mainlayout)
         ConstraintLayout mainLayout;
         @BindView(R.id.item_article_title)
@@ -141,6 +124,39 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+
+            mainLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Article article = articles.get(position);
+                    ArticleFragment articleDetailFragment = new ArticleFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ArticleFragment.ARTICLE_URL, article.getUrl());
+                    articleDetailFragment.setArguments(bundle);
+                    Functions.addAndInitFragmentWithBackStack(articleDetailFragment, R.id.main_app_container, fragmentManager);
+                }
+            });
+            articleImageFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Article article = articles.get(position);
+                    article.setFavorite(!article.isFavorite());
+                    if(article.isFavorite()){
+                        articleImageFavorite.setImageResource(R.drawable.ic_favorite_checked);
+                        DbLab.getInstance(context).AddArticle(article);
+                    }
+                    else{
+                        articleImageFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
+                        DbLab.getInstance(context).DeleteArticle(article);
+                    }
+                }
+            });
+
         }
+
+
+
     }
 }

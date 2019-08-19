@@ -54,6 +54,7 @@ public class DbCursorWrapper extends CursorWrapper {
         if(!imageUrl.isEmpty()){
             Media[] mediaArray = new Media[1];
             Media media=new Media();
+            mediaArray[0]=media;
             MediaMetadata[] mediaMetadataArray = new MediaMetadata[1];
             MediaMetadata mediaMetadata = new MediaMetadata();
             mediaMetadata.setUrl(imageUrl);

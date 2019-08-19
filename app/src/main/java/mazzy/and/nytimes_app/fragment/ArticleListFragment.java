@@ -7,27 +7,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AndroidRuntimeException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
 import butterknife.Unbinder;
 import mazzy.and.nytimes_app.R;
 import mazzy.and.nytimes_app.adapter.ArticleAdapter;
-import mazzy.and.nytimes_app.model.ApiType;
+import mazzy.and.nytimes_app.db.DbLab;
+import mazzy.and.nytimes_app.model.ArticleType;
 import mazzy.and.nytimes_app.model.Article;
 import mazzy.and.nytimes_app.model.ResponseResult;
-import mazzy.and.nytimes_app.tools.Functions;
 import mazzy.and.nytimes_app.webservice.ApiInterface;
 import mazzy.and.nytimes_app.webservice.ServiceGenerator;
 import retrofit2.Call;
@@ -50,7 +49,7 @@ public class ArticleListFragment extends Fragment {
     private Unbinder unbinder;
     private List<Article> articleList = new ArrayList<Article>();
     private ArticleAdapter articleAdapter;
-    private ApiType apiType;
+    private ArticleType apiType;
 
 
 
@@ -60,7 +59,7 @@ public class ArticleListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_acticle_list, container, false);
 
         Bundle bundle=getArguments();
-        apiType=ApiType.valueOf(bundle.getString(ApiTypeKey));
+        apiType= ArticleType.valueOf(bundle.getString(ApiTypeKey));
         unbinder = ButterKnife.bind(this, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -70,12 +69,23 @@ public class ArticleListFragment extends Fragment {
         recyclerView.setAdapter(articleAdapter);
         ShowProgressBar(true);
         GetArticles();
+
+
         return view;
     }
 
 
 
+
+
     private void GetArticles() {
+        if (apiType == ArticleType.FAVORITE) {
+            articleList.clear();
+            articleList.addAll(DbLab.getInstance(getContext()).getArticles());
+            ShowProgressBar(false);
+            return;
+        }
+
         ApiInterface apiInterface = ServiceGenerator.createService(ApiInterface.class);
         Call<ResponseResult> call = apiInterface.getMostPopular("mostpopular", "v2", apiType.getTypeString(), 30, ServiceGenerator.API_KEY);
         call.enqueue(new Callback<ResponseResult>() {
@@ -96,6 +106,7 @@ public class ArticleListFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseResult> call, Throwable t) {
                 Log.e(TAG, "failed" + t.getMessage());
+
                 ShowProgressBar(false);
             }
         });

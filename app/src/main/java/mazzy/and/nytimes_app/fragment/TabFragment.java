@@ -14,8 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import mazzy.and.nytimes_app.R;
-import mazzy.and.nytimes_app.db.DbLab;
-import mazzy.and.nytimes_app.model.ApiType;
+import mazzy.and.nytimes_app.model.ArticleType;
 import mazzy.and.nytimes_app.tools.Functions;
 import mazzy.and.nytimes_app.adapter.TabAdapter;
 
@@ -41,16 +40,21 @@ public class TabFragment extends Fragment {
 
 
         ArticleListFragment emailedFragment=new ArticleListFragment();
-        emailedFragment.setArguments(GetArticleListFragmentBundle(ApiType.EMAILED));
+        emailedFragment.setArguments(GetArticleListFragmentBundle(ArticleType.EMAILED));
         ArticleListFragment sharedFragment=new ArticleListFragment();
-        sharedFragment.setArguments(GetArticleListFragmentBundle(ApiType.SHARED));
+        sharedFragment.setArguments(GetArticleListFragmentBundle(ArticleType.SHARED));
         ArticleListFragment viewedFragment=new ArticleListFragment();
-        viewedFragment.setArguments(GetArticleListFragmentBundle(ApiType.VIEWED));
+        viewedFragment.setArguments(GetArticleListFragmentBundle(ArticleType.VIEWED));
+        ArticleListFragment favoritesFragment=new ArticleListFragment();
+        ((ArticleListFragment) favoritesFragment).setArguments(GetArticleListFragmentBundle(ArticleType.FAVORITE));
+
+
 
 
         tabAdapter.addFragment(emailedFragment, Functions.getStringResourceByName("emailedtab",getContext()));
         tabAdapter.addFragment(sharedFragment, Functions.getStringResourceByName("sharedtab",getContext()));
         tabAdapter.addFragment(viewedFragment, Functions.getStringResourceByName("viewedtab",getContext()));
+        tabAdapter.addFragment(favoritesFragment, Functions.getStringResourceByName("favoritestab",getContext()));
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -65,7 +69,7 @@ public class TabFragment extends Fragment {
     }
 
 
-    private Bundle GetArticleListFragmentBundle(ApiType t) {
+    private Bundle GetArticleListFragmentBundle(ArticleType t) {
         Bundle b = new Bundle();
         b.putString(ArticleListFragment.ApiTypeKey, t.toString());
         return b;

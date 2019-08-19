@@ -6,4 +6,6 @@
     <string name="emailedtab">EMAILED</string>
     <string name="sharedtab">SHARED</string>
     <string name="viewedtab">VIEWED</string>
+    <string name="favoritestab">FAVORITES</string>
+    favoritestab
 </resources>
